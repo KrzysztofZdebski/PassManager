@@ -26,4 +26,9 @@ public class PasswordController {
     public ResponseEntity<String> getPassword(@RequestParam String site) {
         return ResponseEntity.ok(passwordStore.getOrDefault(site, "Not found"));
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<Map<String, String>> getAllPasswords() {
+        return ResponseEntity.ok(passwordStore);
+    }
 }
