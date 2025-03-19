@@ -1,0 +1,12 @@
+{
+    "manifest_version": 3,
+    "name": "Password Manager",
+    "version": "1.0",
+    "description": "Manage and store passwords securely",
+    "permissions": ["storage"],
+    "host_permissions": ["http://localhost:5000/"],
+    "action": {
+      "default_popup": "popup.html"
+    }
+}
+  
