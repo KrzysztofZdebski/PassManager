@@ -13,13 +13,22 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory; 
 import javax.crypto.spec.IvParameterSpec; 
 import javax.crypto.spec.PBEKeySpec; 
-import javax.crypto.spec.SecretKeySpec; 
+import javax.crypto.spec.SecretKeySpec;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty; 
 
 public class Password {
     private static final String SECRET_KEY = "my_super_secret_key_ho_ho_ho";
     private static final String SALT = "ssshhhhhhhhhhh!!!!";
+    @JsonProperty("encryptedPassword")
     private String pass;
-    private Site site;
+    private Site site;    
+
+    public Password(){
+
+    }
+
     public Password(String pass, Site site){
         this.site = site;
         this.pass = encrypt(pass);
@@ -90,6 +99,10 @@ public class Password {
     public String getEncryptedPassword(){
         return pass;
     }
+    public void setEncyptedPassword(String pass){
+        this.pass = pass;
+    }
+    @JsonIgnore
     public String getPassword(){
         return decrypt(pass);
     }
@@ -98,6 +111,9 @@ public class Password {
     }
     public Site getSite(){
         return site;
+    }
+    public void setSite(Site site){
+        this.site = site;
     }
     public static void main(String[] args) {
         // try {
