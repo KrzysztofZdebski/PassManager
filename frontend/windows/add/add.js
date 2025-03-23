@@ -25,4 +25,25 @@ $(document).ready(function() {
         // Redirect to the popup.html
         location.href = '\\windows\\popup\\popup.html';
     });
+
+    $('#showPasswordIcon').on('click', function() {
+        const password = $('#password');
+        if (password.attr('type') === 'password') {
+            password.attr('type', 'text');
+            $('#showPasswordIcon').css('opacity', '1');
+        } else {
+            password.attr('type', 'password');
+            $('#showPasswordIcon').css('opacity', '0.3');
+        }
+    });
+
+    $('#generatePasswordButton').on('click', function() {
+        fetch(`http://localhost:5000/api/passwords/generate?options=someOptions`, {
+            method: "GET"
+        })
+        .then(response => response.text())
+        .then(data => {
+            $('#password').val(data);
+        });    
+    });
 });

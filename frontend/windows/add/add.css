@@ -2,7 +2,6 @@ body {
     padding: 20px;
     width: 300px;
 }
-
 .container {
     max-width: 500px;
     margin: auto;
@@ -11,12 +10,30 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
 h2 {
     text-align: center;
     margin-bottom: 20px;
 }
-
 button {
     margin-right: 10px;
+}
+#showPasswordIcon{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: 20%;
+    top: 28%;
+    cursor: pointer;
+    opacity: 0.3;
+}
+#generatePasswordButton{
+    width: 40px;
+    cursor: pointer;
+}
+#generateIcon{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    right: 25%;
+    top: 25%;
 }

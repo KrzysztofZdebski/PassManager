@@ -19,11 +19,13 @@ public class PasswordController {
     @PostMapping("/save")
     public ResponseEntity<String> savePassword(@RequestParam String site, @RequestParam String password) {
         passwordStore.put(site, password);
+        System.out.println("Saving password for site: " + site);
         return ResponseEntity.ok("Password saved!");
     }
 
     @GetMapping("/get")
     public ResponseEntity<String> getPassword(@RequestParam String site) {
+        System.out.println("Getting password for site: " + site);
         return ResponseEntity.ok(passwordStore.getOrDefault(site, "Not found"));
     }
 
@@ -31,4 +33,11 @@ public class PasswordController {
     public ResponseEntity<Map<String, String>> getAllPasswords() {
         return ResponseEntity.ok(passwordStore);
     }
+
+    @GetMapping("/generate")
+    public ResponseEntity<String> generate(@RequestParam String options) {
+        System.out.println("Generating password with options: " + options);
+        return ResponseEntity.ok("generated password");
+    }
+    
 }

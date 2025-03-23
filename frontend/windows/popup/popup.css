@@ -22,7 +22,7 @@ li.nav-item{
     margin: 0 15px;
 }
 input.input-form{
-    width: 250px;
+    width: 210px;
 }
 #full-nav{
     display: flex;
@@ -43,5 +43,14 @@ input.input-form{
 a:hover{
     color: white !important;
     text-decoration: none;
+    cursor: pointer;
+}
+li.listItem:hover{
+    background-color: lightgray;
+}
+li.listItem:focus{
+    background-color: lightgray;
+}
+input[type="checkbox"]:hover{
     cursor: pointer;
 }
