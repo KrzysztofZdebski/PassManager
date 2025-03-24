@@ -6,7 +6,6 @@ import JPWP.backend.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
