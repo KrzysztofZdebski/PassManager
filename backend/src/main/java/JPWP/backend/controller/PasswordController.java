@@ -6,7 +6,6 @@ import JPWP.backend.*;
 import java.io.File;
 import java.io.IOException;
 
-import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -89,5 +88,23 @@ public class PasswordController {
             System.out.println("Error loading passwords: "+ e);
             passwordStore = new HashMap<>();
         }
+    }
+
+    @GetMapping("/generate")
+    public ResponseEntity<String> generate(@RequestParam String options) {
+        System.out.println("Generating password with options: " + options);
+        return ResponseEntity.ok("generated");
+    }
+    
+    @GetMapping("/encrypt")
+    public String encryptPassword(@RequestParam String password, @RequestParam String key) {
+        System.out.println("Encrypting password: " + password + " with key: " + key);
+        return password + " encrypted";
+    }
+
+    @GetMapping("/decrypt")
+    public String decryptPassword(@RequestParam String password, @RequestParam String key) {
+        System.out.println("Decrypting password: " + password + " with key: " + key);
+        return password + " decrypted";
     }
 }
