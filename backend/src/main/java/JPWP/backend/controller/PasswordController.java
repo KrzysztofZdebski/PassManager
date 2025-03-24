@@ -37,18 +37,18 @@ public class PasswordController {
     @GetMapping("/generate")
     public ResponseEntity<String> generate(@RequestParam String options) {
         System.out.println("Generating password with options: " + options);
-        return ResponseEntity.ok("generated password");
+        return ResponseEntity.ok("generated");
     }
     
     @GetMapping("/encrypt")
     public String encryptPassword(@RequestParam String password, @RequestParam String key) {
         System.out.println("Encrypting password: " + password + " with key: " + key);
-        return password;
+        return password + " encrypted";
     }
 
     @GetMapping("/decrypt")
     public String decryptPassword(@RequestParam String password, @RequestParam String key) {
         System.out.println("Decrypting password: " + password + " with key: " + key);
-        return password;
+        return password + " decrypted";
     }
 }

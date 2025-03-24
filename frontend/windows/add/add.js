@@ -12,16 +12,16 @@ $(document).ready(function() {
 
     $('#addPasswordForm').on('submit', function(event) {
         event.preventDefault();
-        const siteName = $('#siteName').val();
-        const password = $('#password').val();
+        let siteName = $('#siteName').val();
+        let password = $('#password').val();
 
         // chrome.tabs.query({ active: true, lastFocusedWindow: true })
         // Retrieve existing data from chrome.storage.local
-        chrome.storage.local.get('data', (result) => {
+        chrome.storage.local.get('data', async (result) => {
             let data = result.data || []; // Initialize data as an empty array if it doesn't exist
             let key = siteName;
 
-            fetch(`http://localhost:5000/api/passwords/encrypt?password=${password}&key=${key}`, {
+            await fetch(`http://localhost:5000/api/passwords/encrypt?password=${password}&key=${key}`, {
                 method: "GET",
             })
             .then(response => response.text())
