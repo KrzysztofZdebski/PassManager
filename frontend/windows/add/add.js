@@ -1,13 +1,33 @@
 $(document).ready(function() {
+
+    chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
+        let openedURL = tabs[0].url;
+        console.log(openedURL);
+        openedURL = openedURL.replace('https://', '');
+        openedURL = openedURL.replace('http://', '');
+        openedURL = openedURL.slice(0, openedURL.indexOf('/'));
+        console.log(openedURL);
+        $('#siteName').val(openedURL);
+    });
+
     $('#addPasswordForm').on('submit', function(event) {
         event.preventDefault();
         const siteName = $('#siteName').val();
         const password = $('#password').val();
 
+        // chrome.tabs.query({ active: true, lastFocusedWindow: true })
         // Retrieve existing data from chrome.storage.local
         chrome.storage.local.get('data', (result) => {
             let data = result.data || []; // Initialize data as an empty array if it doesn't exist
+            let key = siteName;
 
+            fetch(`http://localhost:5000/api/passwords/encrypt?password=${password}&key=${key}`, {
+                method: "GET",
+            })
+            .then(response => response.text())
+            .then(data => {
+                password = data;
+            });
             // Add the new siteName and password to the data array
             data.push({ siteName: siteName, password: password });
 
@@ -46,4 +66,5 @@ $(document).ready(function() {
             $('#password').val(data);
         });    
     });
+
 });

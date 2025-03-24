@@ -40,4 +40,15 @@ public class PasswordController {
         return ResponseEntity.ok("generated password");
     }
     
+    @GetMapping("/encrypt")
+    public String encryptPassword(@RequestParam String password, @RequestParam String key) {
+        System.out.println("Encrypting password: " + password + " with key: " + key);
+        return password;
+    }
+
+    @GetMapping("/decrypt")
+    public String decryptPassword(@RequestParam String password, @RequestParam String key) {
+        System.out.println("Decrypting password: " + password + " with key: " + key);
+        return password;
+    }
 }
