@@ -83,7 +83,7 @@ $(document).ready(() => {
         if (e.target.textContent === "Hide") {
             chrome.storage.local.get("data", data => {
                 let passwords = data.data;
-                fetch(`http://localhost:5000/api/passwords/encrypt?password=${passwords[idx].password}&key=${passwords[idx].siteName}`, {
+                fetch(`http://localhost:5000/api/passwords/encrypt?password=${encodeURIComponent(passwords[idx].password)}&key=${encodeURIComponent(passwords[idx].siteName)}`, {
                     method: "GET"
                 })
                 .then(response => response.text())
@@ -97,7 +97,7 @@ $(document).ready(() => {
         }else{
             chrome.storage.local.get("data", data => {
                 let passwords = data.data;
-                fetch(`http://localhost:5000/api/passwords/decrypt?password=${passwords[idx].password}&key=${passwords[idx].siteName}`, {
+                fetch(`http://localhost:5000/api/passwords/decrypt?encryptedPassword=${encodeURIComponent(passwords[idx].password)}&key=${encodeURIComponent(passwords[idx].siteName)}`, {
                     method: "GET"
                 })
                 .then(response => response.text())
@@ -184,9 +184,9 @@ function hidePasswords() {
     passwords.each(function() {
         let text = $(this).text();
         let hidden = "";
-        for (let i = 0; i < text.length; i++) {
+        for (let i = 0; i < text.length && i < 10; i++) {
             hidden += "*";
-        }
+        }   
         $(this).text(hidden);
     });
 }

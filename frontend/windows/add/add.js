@@ -21,7 +21,7 @@ $(document).ready(function() {
             let data = result.data || []; // Initialize data as an empty array if it doesn't exist
             let key = siteName;
 
-            await fetch(`http://localhost:5000/api/passwords/encrypt?password=${password}&key=${key}`, {
+            await fetch(`http://localhost:5000/api/passwords/encrypt?password=${encodeURIComponent(password)}&key=${encodeURIComponent(key)}`, {
                 method: "GET",
             })
             .then(response => response.text())
