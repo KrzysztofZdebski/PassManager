@@ -102,7 +102,7 @@ public class PasswordController {
         System.out.println("Encrypting password: " + password + " with key: " + key);
         Password pass = new Password();
         password = pass.encryptWithKey(password, key);
-        return password + " encrypted";
+        return password;
     }
 
     @GetMapping("/decrypt")
@@ -110,6 +110,6 @@ public class PasswordController {
         System.out.println("Decrypting password: " + encryptedPassword + " with key: " + key);
         Password pass = new Password();
         encryptedPassword = pass.decryptedWithKey(encryptedPassword, key);
-        return encryptedPassword + " decrypted";
+        return encryptedPassword;
     }
 }
