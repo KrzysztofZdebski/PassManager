@@ -1,7 +1,5 @@
 package JPWP.backend;
 
-// Java program to demonstrate the creation 
-// of Encryption and Decryption with Java AES 
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec; 
