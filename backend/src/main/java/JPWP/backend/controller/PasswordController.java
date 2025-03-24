@@ -22,7 +22,6 @@ public class PasswordController {
     
     private Map<String, Password> passwordStore = new HashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
-
     public PasswordController(){
         loadData();
     }
@@ -38,11 +37,11 @@ public class PasswordController {
 
     @GetMapping("/get")
     public ResponseEntity<String> getPassword(@RequestParam String siteName) {
-        Password password = passwordStore.get(siteName);
-        if(password == null){
+        Password getPassword = passwordStore.get(siteName);
+        if(getPassword == null){
             return ResponseEntity.ok("Not found");
         }
-        return ResponseEntity.ok(password.getPassword());
+        return ResponseEntity.ok(getPassword.getPassword());
     }
 
     @GetMapping("/all")
@@ -92,19 +91,25 @@ public class PasswordController {
 
     @GetMapping("/generate")
     public ResponseEntity<String> generate(@RequestParam String options) {
-        System.out.println("Generating password with options: " + options);
-        return ResponseEntity.ok("generated");
+        Password password = new Password();
+        String generatedPassword = password.generatePassword(options);
+        System.out.println("Generating password: "+ generatedPassword +" with options: " + options);
+        return ResponseEntity.ok(generatedPassword);
     }
     
     @GetMapping("/encrypt")
     public String encryptPassword(@RequestParam String password, @RequestParam String key) {
         System.out.println("Encrypting password: " + password + " with key: " + key);
+        Password pass = new Password();
+        password = pass.encryptWithKey(password, key);
         return password + " encrypted";
     }
 
     @GetMapping("/decrypt")
-    public String decryptPassword(@RequestParam String password, @RequestParam String key) {
-        System.out.println("Decrypting password: " + password + " with key: " + key);
-        return password + " decrypted";
+    public String decryptPassword(@RequestParam String encryptedPassword, @RequestParam String key) {
+        System.out.println("Decrypting password: " + encryptedPassword + " with key: " + key);
+        Password pass = new Password();
+        encryptedPassword = pass.decryptedWithKey(encryptedPassword, key);
+        return encryptedPassword + " decrypted";
     }
 }

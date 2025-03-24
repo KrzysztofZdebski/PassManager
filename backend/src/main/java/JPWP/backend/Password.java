@@ -3,7 +3,9 @@ package JPWP.backend;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.security.spec.KeySpec; 
-import java.util.Base64; 
+import java.util.Base64;
+import java.util.Random;
+
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey; 
 import javax.crypto.SecretKeyFactory; 
@@ -41,6 +43,26 @@ public class Password {
         KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(),SALT.getBytes(),65536,256);
         SecretKey tmp = factory.generateSecret(spec);
         return new SecretKeySpec(tmp.getEncoded(),"AES"); 
+    }
+
+    private static SecretKey getSecretKey(String key) throws Exception{
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        KeySpec spec = new PBEKeySpec(key.toCharArray(),SALT.getBytes(),65536,256);
+        SecretKey tmp = factory.generateSecret(spec);
+        return new SecretKeySpec(tmp.getEncoded(),"AES"); 
+    }
+
+    public String generatePassword(String options){
+        Random rand = new Random();
+        int length = rand.nextInt(10,16);
+        options = "skibidi";
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        StringBuilder generatedPassword = new StringBuilder();
+        for(int i = 0; i < length; i++){
+            int index = rand.nextInt(characters.length());
+            generatedPassword.append((characters.charAt(index)));
+        }
+        return generatedPassword.toString();
     }
 
 	// This method use to encrypt to string 
@@ -111,18 +133,51 @@ public class Password {
     public void setSite(Site site){
         this.site = site;
     }
-    public static void main(String[] args) {
-        // try {
-        //     String originalText = "Hello, World!";
-        //     System.out.println("Original: " + originalText);
+    public String encryptWithKey(String password, String userKey){
+        try{
+            byte[] iv = ivGenerate();
+            IvParameterSpec ivspec = new IvParameterSpec(iv);
+            SecretKey secretKey = getSecretKey(userKey);
 
-        //     String encryptedText = encrypt(originalText);
-        //     System.out.println("Encrypted: " + encryptedText);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
+            
+            byte[] encryptedBytes = cipher.doFinal(password.getBytes(StandardCharsets.UTF_8));
+            byte[] encryptedWithIV = new byte[iv.length + encryptedBytes.length];
+            
+            System.arraycopy(iv, 0, encryptedWithIV, 0, iv.length);
+            System.arraycopy(encryptedBytes, 0, encryptedWithIV, iv.length, encryptedBytes.length);
 
-        //     String decryptedText = decrypt(encryptedText);
-        //     System.out.println("Decrypted: " + decryptedText);
-        // } catch (Exception e) {
-        //     e.printStackTrace();
-        // }
+            return Base64.getEncoder().encodeToString(encryptedWithIV);
+        }catch(Exception e){
+            System.out.println("Error while encrypting with user key: " + e.toString());
+        }
+        return null;
+    }
+    public String decryptedWithKey(String encryptedPassword, String userKey){
+        try {
+            byte[] encryptedWithIV = Base64.getDecoder().decode(encryptedPassword);
+            if (encryptedWithIV.length < 17){
+                System.out.println("Invalid encrypted data format");
+                return null;
+            }
+            byte[] iv = new byte[16];
+            System.arraycopy(encryptedWithIV, 0, iv, 0, iv.length);
+            IvParameterSpec ivspec = new IvParameterSpec(iv);
+    
+         
+            byte[] encryptedBytes = new byte[encryptedWithIV.length - iv.length];
+            System.arraycopy(encryptedWithIV, iv.length, encryptedBytes, 0, encryptedBytes.length);
+    
+            SecretKey secretKey = getSecretKey(userKey);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
+    
+            byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
+            return new String(decryptedBytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            System.out.println("Error while decrypting: " + e.toString());
+        }
+        return null;
     }
 } 
