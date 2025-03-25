@@ -4,7 +4,7 @@
     "version": "1.0",
     "description": "Manage and store passwords securely",
     "permissions": ["storage","tabs"],
-    "host_permissions": ["http://localhost:5000/"],
+    "host_permissions": ["https://localhost:5001/"],
     "action": {
       "default_popup": "windows/popup/popup.html"
     },
