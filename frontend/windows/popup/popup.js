@@ -51,8 +51,12 @@ $(document).ready(() => {
             });
             toDelete.forEach(async item => {
                 let index = sites.indexOf(item);
+                let user = {};
+                chrome.storage.local.get("user", data => {
+                    user = data.user || {};
+                });
                 sites.splice(index, 1);
-                await fetch(serverUrl + `/remove?siteName=${encodeURIComponent(item.siteName)}`,{
+                await fetch(serverUrl + `/remove?siteName=${encodeURIComponent(item.siteName)}&user=${user.username}`,{
                     method: "DELETE"
                 })
                 .catch(error => {
@@ -155,11 +159,15 @@ function hidePasswords() {
 
 function showPassword(index) {
     let passwordLabel = $(`#passLabel${index}`);
+    let user = {};
+    chrome.storage.local.get("user", data => {
+        user = data.user || {};
+    });
     chrome.storage.local.get("data", data => {
         let keys = data.data || [];
         let key = keys[index].key;
         let name = keys[index].siteName;
-        fetch(serverUrl + `/get?siteName=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}`)
+        fetch(serverUrl + `/get?siteName=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}&user=${encodeURIComponent(user.username)}`)
         .then(response => response.text())
         .then(data => {
             passwordLabel.text(data);

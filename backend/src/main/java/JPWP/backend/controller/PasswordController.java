@@ -27,18 +27,18 @@ public class PasswordController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<String> savePassword(@RequestParam String siteName, @RequestParam String passwordName) {
+    public ResponseEntity<String> savePassword(@RequestParam String siteName, @RequestParam String passwordName, @RequestParam String user) {
         Site site = new Site(siteName);
         Password password = new Password(passwordName, site);
         String key = password.getKey();
-        passwordStore.put(site.getNameSite(), password);
+        passwordStore.put(user, password);
         saveToFile();
         System.out.println("Password saved!");
         return ResponseEntity.ok(key);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<String> getPassword(@RequestParam String siteName, @RequestParam String key) {
+    public ResponseEntity<String> getPassword(@RequestParam String siteName, @RequestParam String key, @RequestParam String user) {
         Password getPassword = passwordStore.get(siteName);
         if(getPassword == null){
             return ResponseEntity.ok("Not found");
@@ -48,17 +48,17 @@ public class PasswordController {
 
 
     @GetMapping("/all")
-    public ResponseEntity<Map<String, String>> getAllPasswords() {
-        Map<String, String> passwords = new HashMap<>();
+    public ResponseEntity<Map<String, Password>> getAllPasswords() {
+        // Map<String, String> passwords = new HashMap<>();
         
-        for (Map.Entry<String, Password> entry : passwordStore.entrySet()) {
-            passwords.put(entry.getKey(),entry.getValue().getEncryptedPassword());   
-        }
-        return ResponseEntity.ok(passwords);
+        // for (Map.Entry<String, Password> entry : passwordStore.entrySet()) {
+        //     passwords.put(entry.getKey(),entry.getValue().getEncryptedPassword());   
+        // }
+        return ResponseEntity.ok(passwordStore);
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<String> removePassword(@RequestParam String siteName) {
+    public ResponseEntity<String> removePassword(@RequestParam String siteName, @RequestParam String user) {
         System.out.println("Attempting to delete siteName: " + siteName); // Debug log
         if (passwordStore.containsKey(siteName)) {
             passwordStore.remove(siteName);

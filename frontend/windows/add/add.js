@@ -13,36 +13,61 @@ $(document).ready(function() {
         $('#siteName').val(openedURL);
     });
 
+    function getUserFromStorage() {
+        return new Promise((resolve, reject) => {
+            chrome.storage.local.get('user', (data) => {
+                if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError);
+                } else {
+                    resolve(data.user || {});
+                }
+            });
+        });
+    }
+
     $('#addPasswordForm').on('submit', async function(event) {
         event.preventDefault();
         let siteName = $('#siteName').val();
         let password = $('#password').val();
         let key = '';
 
-        await fetch(serverUrl + `/save?passwordName=${encodeURIComponent(password)}&siteName=${encodeURIComponent(siteName)}`, {
-            method: "POST",
-        })
-        .then(response => response.text())
-        .then(data => {
-            key = data;
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
-        chrome.storage.local.get('data', async (result) => {
-            let data = result.data || []; // Initialize data as an empty array if it doesn't exist
+        try {
+            // Use the Promise wrapper to get the user data
+            let userN = await getUserFromStorage();
 
-            // Add the new siteName and password to the data array
-            data.push({ siteName: siteName, key: key });
+            // Send the user data to the background script (optional)
+            chrome.runtime.sendMessage({ type: "Add", userN });
 
-            // Save the updated data back to chrome.storage.local
-            chrome.storage.local.set({ 'data': data }, () => {
-                console.log('Data is set to ', data);
+            // Save the password to the server
+            await fetch(serverUrl + `/save?passwordName=${encodeURIComponent(password)}&siteName=${encodeURIComponent(siteName)}&user=${encodeURIComponent(userN.username)}`, {
+                method: "POST",
+            })
+            .then(response => response.text())
+            .then(data => {
+                key = data;
+            })
+            .catch(error => {
+                console.error("Error:", error);
             });
 
-            // Redirect to the popup.html
-            location.href = '\\windows\\popup\\popup.html';
-        });
+            // Update the local storage with the new password
+            chrome.storage.local.get('data', async (result) => {
+                let data = result.data || []; // Initialize data as an empty array if it doesn't exist
+
+                // Add the new siteName and password to the data array
+                data.push({ siteName: siteName, key: key });
+
+                // Save the updated data back to chrome.storage.local
+                chrome.storage.local.set({ 'data': data }, () => {
+                    console.log('Data is set to ', data);
+                });
+
+                // Redirect to the popup.html
+                location.href = '\\windows\\popup\\popup.html';
+            });
+        } catch (error) {
+            console.error("Error retrieving user data:", error);
+        }
     });
 
     $('#cancelButton').on('click', function() {
