@@ -30,13 +30,15 @@ public class PasswordController {
     public ResponseEntity<String> savePassword(@RequestParam String siteName, @RequestParam String passwordName) {
         Site site = new Site(siteName);
         Password password = new Password(passwordName, site);
+        String key = password.getKey();
         passwordStore.put(site.getNameSite(), password);
         saveToFile();
-        return ResponseEntity.ok("Password saved!");
+        System.out.println("Password saved!");
+        return ResponseEntity.ok(key);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<String> getPassword(@RequestParam String siteName) {
+    public ResponseEntity<String> getPassword(@RequestParam String siteName, @RequestParam String key) {
         Password getPassword = passwordStore.get(siteName);
         if(getPassword == null){
             return ResponseEntity.ok("Not found");
