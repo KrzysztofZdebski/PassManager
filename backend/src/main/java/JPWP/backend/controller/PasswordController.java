@@ -27,12 +27,14 @@ public class PasswordController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<String> savePassword(@RequestParam String passwordName, @RequestParam String siteName) {
+    public ResponseEntity<String> savePassword(@RequestParam String siteName, @RequestParam String passwordName) {
         Site site = new Site(siteName);
         Password password = new Password(passwordName, site);
+        String key = password.getKey();
         passwordStore.put(site.getNameSite(), password);
         saveToFile();
-        return ResponseEntity.ok("key");
+        System.out.println("Password saved!");
+        return ResponseEntity.ok(key);
     }
 
     @GetMapping("/get")
@@ -43,6 +45,7 @@ public class PasswordController {
         }
         return ResponseEntity.ok(getPassword.getPassword());
     }
+
 
     @GetMapping("/all")
     public ResponseEntity<Map<String, String>> getAllPasswords() {
