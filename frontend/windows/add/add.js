@@ -5,34 +5,61 @@ $(document).ready(function() {
         console.log(openedURL);
         openedURL = openedURL.replace('https://', '');
         openedURL = openedURL.replace('http://', '');
+        openedURL = openedURL.replace('www.', '');
         openedURL = openedURL.slice(0, openedURL.indexOf('/'));
         console.log(openedURL);
         $('#siteName').val(openedURL);
     });
 
-    $('#addPasswordForm').on('submit', function(event) {
+    $('#addPasswordForm').on('submit', async function(event) {
         event.preventDefault();
         let siteName = $('#siteName').val();
         let password = $('#password').val();
+        let key = '';
 
         // chrome.tabs.query({ active: true, lastFocusedWindow: true })
         // Retrieve existing data from chrome.storage.local
+        // chrome.storage.local.get('data', async (result) => {
+        //     let data = result.data || []; // Initialize data as an empty array if it doesn't exist
+        //     let key = siteName;
+
+        //     await fetch(`http://localhost:5000/api/passwords/encrypt?password=${encodeURIComponent(password)}&key=${encodeURIComponent(key)}`, {
+        //         method: "GET",
+        //     })
+        //     .then(response => response.text())
+        //     .then(data => {
+        //         password = data;
+        //     });
+        //     // Add the new siteName and password to the data array
+        //     data.push({ siteName: siteName, password: password });
+
+        //     // Save the updated data back to chrome.storage.local
+        //     chrome.storage.local.set({ 'data': data }, function() {
+        //         console.log('Data is set to ', data);
+        //     });
+
+        //     // Redirect to the popup.html
+        //     location.href = '\\windows\\popup\\popup.html';
+        // });
+
+        await fetch(`https://localhost:5001/api/passwords/save?passwordName=${encodeURIComponent(password)}&siteName=${encodeURIComponent(siteName)}`, {
+            method: "POST",
+        })
+        .then(response => response.text())
+        .then(data => {
+            key = data;
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
         chrome.storage.local.get('data', async (result) => {
             let data = result.data || []; // Initialize data as an empty array if it doesn't exist
-            let key = siteName;
 
-            await fetch(`http://localhost:5000/api/passwords/encrypt?password=${encodeURIComponent(password)}&key=${encodeURIComponent(key)}`, {
-                method: "GET",
-            })
-            .then(response => response.text())
-            .then(data => {
-                password = data;
-            });
             // Add the new siteName and password to the data array
-            data.push({ siteName: siteName, password: password });
+            data.push({ siteName: siteName, key: key });
 
             // Save the updated data back to chrome.storage.local
-            chrome.storage.local.set({ 'data': data }, function() {
+            chrome.storage.local.set({ 'data': data }, () => {
                 console.log('Data is set to ', data);
             });
 
@@ -58,7 +85,7 @@ $(document).ready(function() {
     });
 
     $('#generatePasswordButton').on('click', function() {
-        fetch(`http://localhost:5000/api/passwords/generate?options=someOptions`, {
+        fetch(`https://localhost:5001/api/passwords/generate?options=someOptions`, {
             method: "GET"
         })
         .then(response => response.text())

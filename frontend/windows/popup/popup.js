@@ -63,16 +63,22 @@ $(document).ready(() => {
             }
         });
         chrome.storage.local.get("data", data => {
-            let passwords = data.data || [];
+            let sites = data.data || [];
             let toDelete = [];
             checked.forEach(index => {
-                toDelete.push(passwords[index]);
+                toDelete.push(sites[index]);
             });
-            toDelete.forEach(item => {
-                let index = passwords.indexOf(item);
-                passwords.splice(index, 1);
+            toDelete.forEach(async item => {
+                let index = sites.indexOf(item);
+                sites.splice(index, 1);
+                await fetch(`https://localhost:5001/api/passwords/remove?siteName=${encodeURIComponent(item.siteName)}`,{
+                    method: "DELETE"
+                })
+                .catch(error => {
+                    console.error("DeleteError:", error);
+                });
             });
-            chrome.storage.local.set({ data: passwords }, () => {
+            chrome.storage.local.set({ data: sites }, () => {
                 refresh();
             });
         });
@@ -81,33 +87,11 @@ $(document).ready(() => {
     $(document).on("click", ".showBtn", (e) => {
         let idx = e.target.getAttribute("btnIdx");
         if (e.target.textContent === "Hide") {
-            chrome.storage.local.get("data", data => {
-                let passwords = data.data;
-                fetch(`http://localhost:5000/api/passwords/encrypt?password=${encodeURIComponent(passwords[idx].password)}&key=${encodeURIComponent(passwords[idx].siteName)}`, {
-                    method: "GET"
-                })
-                .then(response => response.text())
-                .then(data => {
-                    passwords[idx].password = data;
-                    chrome.storage.local.set({ data: passwords });
-                    e.target.textContent = "Show";
-                    hidePasswords();
-                }); 
-            });
+            e.target.textContent = "Show";
+            hidePasswords();
         }else{
-            chrome.storage.local.get("data", data => {
-                let passwords = data.data;
-                fetch(`http://localhost:5000/api/passwords/decrypt?encryptedPassword=${encodeURIComponent(passwords[idx].password)}&key=${encodeURIComponent(passwords[idx].siteName)}`, {
-                    method: "GET"
-                })
-                .then(response => response.text())
-                .then(data => {
-                    passwords[idx].password = data;
-                    chrome.storage.local.set({ data: passwords });
-                    e.target.textContent = "Hide";
-                    showPassword(idx);
-                }); 
-            });
+            e.target.textContent = "Hide";
+            showPassword(idx);
         }
     });
 
@@ -150,11 +134,11 @@ $(document).ready(() => {
 
 function refresh() {
     chrome.storage.local.get("data", data => {
-        let passwords = data.data || [];
+        let sites = data.data || [];
         $("#list").empty();
-        passwords.forEach((password, index) => {
-            let site = password.siteName;
-            let pass = password.password;
+        sites.forEach((site, index) => {
+            let siteName = site.siteName;
+            let pass = '**********';
             let row = `
             <li class="list-group-item listItem" id="listItem${index}">
                 <div class="d-flex justify-content-between align-items-center">
@@ -162,7 +146,7 @@ function refresh() {
                         <input type="checkbox" class="form-check-input" id="item${index}">
                     </div>
                     <div class="flex-grow-1 mx-2">
-                        <label id="siteLabel${index}" class="form-check-label" for="item${index}">${site}:</label>
+                        <label id="siteLabel${index}" class="form-check-label" for="item${index}">${siteName}:</label>
                         <label id="passLabel${index}" class="form-check-label passLabel" for="item${index}">${pass}</label>
                     </div>
                     <div>
@@ -175,16 +159,13 @@ function refresh() {
             </li>`;
             $("#list").append(row);
         });
-        hidePasswords();
     });
 }
 
 function hidePasswords() {  
-    let passwords = $('.passLabel');
-    passwords.each(function() {
-        let text = $(this).text();
+    $('.passLabel').each(function() {
         let hidden = "";
-        for (let i = 0; i < text.length && i < 10; i++) {
+        for (let i = 0; i < 10; i++) {
             hidden += "*";
         }   
         $(this).text(hidden);
@@ -194,8 +175,16 @@ function hidePasswords() {
 function showPassword(index) {
     let passwordLabel = $(`#passLabel${index}`);
     chrome.storage.local.get("data", data => {
-        let passwords = data.data || [];
-        let password = passwords[index].password;
-        passwordLabel.text(password);
+        let keys = data.data || [];
+        let key = keys[index].key;
+        let name = keys[index].siteName;
+        fetch(`https://localhost:5001/api/passwords/get?siteName=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}`)
+        .then(response => response.text())
+        .then(data => {
+            passwordLabel.text(data);
+        })
+        .catch(error => {
+            console.error("GetError:", error);
+        });
     });
 }
