@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RedirectConfig {
     @Bean
-    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
+    WebServerFactoryCustomizer<TomcatServletWebServerFactory> customizer() {
         return factory -> {
             factory.addAdditionalTomcatConnectors(httpToHttpsRedirectConnector());
         };

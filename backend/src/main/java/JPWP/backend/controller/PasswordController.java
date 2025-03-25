@@ -66,6 +66,18 @@ public class PasswordController {
         }
     }
 
+    @GetMapping("/generate")
+    public ResponseEntity<String> generate(@RequestParam String options) {
+        Password password = new Password();
+        String generatedPassword = password.generatePassword(options);
+        return ResponseEntity.ok(generatedPassword);
+    }
+
+    @PostMapping("/authenticate")
+    public ResponseEntity<Boolean> authenticate(@RequestParam String username, @RequestParam String password) {
+        return ResponseEntity.ok(true);
+    }
+
     public void saveToFile(){
         try{
             objectMapper.writeValue(new File("src\\main\\java\\JPWP\\backend\\database\\passwords.json"),passwordStore);
@@ -90,12 +102,7 @@ public class PasswordController {
         }
     }
 
-    @GetMapping("/generate")
-    public ResponseEntity<String> generate(@RequestParam String options) {
-        Password password = new Password();
-        String generatedPassword = password.generatePassword(options);
-        return ResponseEntity.ok(generatedPassword);
-    }
+    
     
     // @GetMapping("/encrypt")
     // public ResponseEntity<String> encryptPassword(@RequestParam String password, @RequestParam String key) {

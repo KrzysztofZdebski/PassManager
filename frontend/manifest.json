@@ -6,12 +6,15 @@
     "permissions": ["storage","tabs"],
     "host_permissions": ["https://localhost:5001/"],
     "action": {
-      "default_popup": "windows/popup/popup.html"
+      "default_popup": "windows/login/login.html"
     },
     "web_accessible_resources": [
       {
         "resources": ["lib/jquery-3.6.4.min.js", "lib/bootstrapJS.js"],
         "matches": ["<all_urls>"]
       }
-    ]
+    ],
+    "background": {
+      "service_worker": "service-worker.js"
+    }
 }

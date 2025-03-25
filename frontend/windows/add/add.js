@@ -1,3 +1,5 @@
+const serverUrl = 'https://localhost:5001/api/passwords';
+
 $(document).ready(function() {
 
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
@@ -17,32 +19,7 @@ $(document).ready(function() {
         let password = $('#password').val();
         let key = '';
 
-        // chrome.tabs.query({ active: true, lastFocusedWindow: true })
-        // Retrieve existing data from chrome.storage.local
-        // chrome.storage.local.get('data', async (result) => {
-        //     let data = result.data || []; // Initialize data as an empty array if it doesn't exist
-        //     let key = siteName;
-
-        //     await fetch(`http://localhost:5000/api/passwords/encrypt?password=${encodeURIComponent(password)}&key=${encodeURIComponent(key)}`, {
-        //         method: "GET",
-        //     })
-        //     .then(response => response.text())
-        //     .then(data => {
-        //         password = data;
-        //     });
-        //     // Add the new siteName and password to the data array
-        //     data.push({ siteName: siteName, password: password });
-
-        //     // Save the updated data back to chrome.storage.local
-        //     chrome.storage.local.set({ 'data': data }, function() {
-        //         console.log('Data is set to ', data);
-        //     });
-
-        //     // Redirect to the popup.html
-        //     location.href = '\\windows\\popup\\popup.html';
-        // });
-
-        await fetch(`https://localhost:5001/api/passwords/save?passwordName=${encodeURIComponent(password)}&siteName=${encodeURIComponent(siteName)}`, {
+        await fetch(serverUrl + `/save?passwordName=${encodeURIComponent(password)}&siteName=${encodeURIComponent(siteName)}`, {
             method: "POST",
         })
         .then(response => response.text())

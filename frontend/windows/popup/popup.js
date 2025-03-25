@@ -1,23 +1,4 @@
-// $("#save").addEventListener("click", () => {
-//     const site = document.getElementById("site").value;
-//     const password = document.getElementById("password").value;
-
-//     fetch(`http://localhost:5000/api/passwords/save?site=${site}&password=${password}`, {
-//         method: "POST"
-//     }).then(response => response.text()).then(data => {
-//         document.getElementById("result").textContent = data;
-//     });
-// });
-
-// $("#get").addEventListener("click", () => {
-//     const site = document.getElementById("site").value;
-
-//     fetch(`http://localhost:5000/api/passwords/get?site=${site}`)
-//         .then(response => response.text())
-//         .then(data => {
-//             document.getElementById("result").textContent = `Password: ${data}`;
-//         });
-// });
+const serverUrl = "https://localhost:5001/api/passwords";
 
 $(document).ready(() => {
     refresh();
@@ -71,7 +52,7 @@ $(document).ready(() => {
             toDelete.forEach(async item => {
                 let index = sites.indexOf(item);
                 sites.splice(index, 1);
-                await fetch(`https://localhost:5001/api/passwords/remove?siteName=${encodeURIComponent(item.siteName)}`,{
+                await fetch(serverUrl + `/remove?siteName=${encodeURIComponent(item.siteName)}`,{
                     method: "DELETE"
                 })
                 .catch(error => {
@@ -178,7 +159,7 @@ function showPassword(index) {
         let keys = data.data || [];
         let key = keys[index].key;
         let name = keys[index].siteName;
-        fetch(`https://localhost:5001/api/passwords/get?siteName=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}`)
+        fetch(serverUrl + `/get?siteName=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}`)
         .then(response => response.text())
         .then(data => {
             passwordLabel.text(data);
