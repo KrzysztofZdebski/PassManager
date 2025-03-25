@@ -9,6 +9,7 @@ import JPWP.backend.*;
 import org.springframework.http.ResponseEntity;
 // import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 // import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -88,6 +89,20 @@ public class PasswordController {
     //         passwordStore = new HashMap<>();
     //     }
     // }
+    Password password = new Password();
+    @PostMapping("/save")
+    public ResponseEntity<String> savePassword(@RequestParam String siteName, @RequestParam String passwordName) {
+        Site site = new Site(siteName);
+        this.password = new Password(passwordName, site);
+        String key = password.getKey();
+        System.out.println("Password saved!");
+        return ResponseEntity.ok(key);
+    }
+    @GetMapping("/get")
+    public ResponseEntity<String> getPassword(@RequestParam String siteName,@RequestParam String key) {
+        String passwordName= password.decryptedWithKey(password.getEncryptedPassword(),key);
+        return ResponseEntity.ok(passwordName);
+    }
 
     @GetMapping("/generate")
     public ResponseEntity<String> generate(@RequestParam String options) {

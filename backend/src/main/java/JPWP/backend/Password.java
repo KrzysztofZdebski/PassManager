@@ -17,8 +17,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty; 
 
 public class Password {
-    private static final String SECRET_KEY = "my_super_secret_key_ho_ho_ho";
-    private static final String SALT = "ssshhhhhhhhhhh!!!!";
+    private  final String SECRET_KEY = "my_super_secret_key_ho_ho_ho";
+    private  final String SALT = "ssshhhhhhhhhhh!!!!";
+    private  String key = new String();
     @JsonProperty("encryptedPassword")
     private String pass;
     private Site site;    
@@ -29,7 +30,8 @@ public class Password {
 
     public Password(String pass, Site site){
         this.site = site;
-        this.pass = encrypt(pass);
+        this.key = generateKey();
+        this.pass = encryptWithKey(pass,key);
     }
 
     private static byte[] ivGenerate(){
@@ -38,14 +40,26 @@ public class Password {
         return iv;
     }
     
-    private static SecretKey generateAESKey() throws Exception{
+    private  String generateKey(){
+        Random rand = new Random();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder generatedKey  = new StringBuilder();
+        for(int i = 0;i < 64;i++){
+            int index = rand.nextInt(0,characters.length());
+            generatedKey.append(characters.charAt(index));
+        }
+        return generatedKey.toString();
+    }
+
+    private  SecretKey generateAESKey(boolean isEncrypted) throws Exception{
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        KeySpec spec = new PBEKeySpec(SECRET_KEY.toCharArray(),SALT.getBytes(),65536,256);
+        if(isEncrypted == false){key = generateKey();}
+        KeySpec spec = new PBEKeySpec(key.toCharArray(),SALT.getBytes(),65536,256);
         SecretKey tmp = factory.generateSecret(spec);
         return new SecretKeySpec(tmp.getEncoded(),"AES"); 
     }
 
-    private static SecretKey getSecretKey(String key) throws Exception{
+    private  SecretKey getSecretKey(String key) throws Exception{
         SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
         KeySpec spec = new PBEKeySpec(key.toCharArray(),SALT.getBytes(),65536,256);
         SecretKey tmp = factory.generateSecret(spec);
@@ -66,11 +80,11 @@ public class Password {
     }
 
 	// This method use to encrypt to string 
-    public static String encrypt(String encryptedString) {
+    public  String encrypt(String encryptedString) {
         try {
             byte[] iv = ivGenerate();
             IvParameterSpec ivspec = new IvParameterSpec(iv);
-            SecretKey secretKey = generateAESKey();
+            SecretKey secretKey = generateAESKey(false);
     
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivspec);
@@ -88,7 +102,7 @@ public class Password {
         return null;
     }
     
-    public static String decrypt(String encryptedString) {
+    public  String decrypt(String encryptedString) {
         try {
             byte[] encryptedWithIV = Base64.getDecoder().decode(encryptedString);
             if (encryptedWithIV.length < 17){
@@ -103,7 +117,7 @@ public class Password {
             byte[] encryptedBytes = new byte[encryptedWithIV.length - iv.length];
             System.arraycopy(encryptedWithIV, iv.length, encryptedBytes, 0, encryptedBytes.length);
     
-            SecretKey secretKey = generateAESKey();
+            SecretKey secretKey = generateAESKey(true);
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
             cipher.init(Cipher.DECRYPT_MODE, secretKey, ivspec);
     
@@ -122,7 +136,7 @@ public class Password {
     }
     @JsonIgnore
     public String getPassword(){
-        return decrypt(pass);
+        return decryptedWithKey(pass,key);
     }
     public void setPassword(String newPass){
         this.pass = encrypt(newPass);
@@ -132,6 +146,9 @@ public class Password {
     }
     public void setSite(Site site){
         this.site = site;
+    }
+    public String getKey(){
+        return key;
     }
     public String encryptWithKey(String password, String userKey){
         try{
@@ -180,4 +197,5 @@ public class Password {
         }
         return null;
     }
+ 
 } 
