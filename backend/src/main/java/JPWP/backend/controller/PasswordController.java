@@ -23,12 +23,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/api/passwords")
 public final class PasswordController {
     
-    private final String dataPath = "src\\main\\java\\JPWP\\backend\\database\\passwords.json";
+    private final String dataPath = "src\\main\\java\\JPWP\\backend\\database\\large_passwords.json";
     // private Map<String, Password> passwordStore = new HashMap<>();
     private List<Password> passwordStore;
     private final ObjectMapper objectMapper = new ObjectMapper();
     public PasswordController(){
-        loadData();
+        // loadData();
     }
 
     @PostMapping("/save")
@@ -44,7 +44,8 @@ public final class PasswordController {
 
     @GetMapping("/get")
     public ResponseEntity<String> getPassword(@RequestParam String siteName, @RequestParam String key, @RequestParam String user) {
-        Password pass = passwordStore.parallelStream()
+        // Password pass = passwordStore.parallelStream()
+        Password pass = LazyLoader.loadPasswords(dataPath)
                                     .filter(p -> p.getSite().getNameSite().equals(siteName) && p.getUser().equals(user))
                                     .findFirst()
                                     .orElse(null);
@@ -74,7 +75,8 @@ public final class PasswordController {
     @DeleteMapping("/remove")
     public ResponseEntity<String> removePassword(@RequestParam String siteName, @RequestParam String user) {
         System.out.println("Attempting to delete siteName: " + siteName + " From user " + user); // Debug log
-        Password pass = passwordStore.parallelStream()
+        // Password pass = passwordStore.parallelStream()
+        Password pass = LazyLoader.loadPasswords(dataPath)
                                     .filter(p -> p.getSite().getNameSite().equals(siteName) && p.getUser().equals(user))
                                     .findFirst()
                                     .orElse(null);
@@ -109,11 +111,11 @@ public final class PasswordController {
     }
 
     public void saveToFile(){
-        try{
-            objectMapper.writeValue(new File(dataPath),passwordStore);
-        }catch(IOException e){
-            System.out.println("Error saving passwords: "+ e);
-        }
+        // try{
+        //     objectMapper.writeValue(new File(dataPath),passwordStore);
+        // }catch(IOException e){
+        //     System.out.println("Error saving passwords: "+ e);
+        // }
     }
 
     public void loadData(){

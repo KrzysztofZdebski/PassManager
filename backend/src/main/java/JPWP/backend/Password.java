@@ -16,7 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty; 
 
-public class Password {
+public final class Password {
     private  final String SECRET_KEY = "my_super_secret_key_ho_ho_ho";
     private  final String SALT = "ssshhhhhhhhhhh!!!!";
     private  String key = new String();
@@ -130,9 +130,11 @@ public class Password {
         }
         return null;
     }
+    @JsonProperty("encryptedPassword")
     public String getEncryptedPassword(){
         return pass;
     }
+    @JsonProperty("encryptedPassword")
     public void setEncyptedPassword(String pass){
         this.pass = pass;
     }
