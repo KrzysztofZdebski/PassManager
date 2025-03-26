@@ -14,24 +14,27 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty; 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName; 
 
-public class Password {
+public final class Password {
     private  final String SECRET_KEY = "my_super_secret_key_ho_ho_ho";
     private  final String SALT = "ssshhhhhhhhhhh!!!!";
     private  String key = new String();
-    @JsonProperty("encryptedPassword")
+    @SerializedName("encryptedPassword")
     private String pass;
     private Site site;    
+    private String user;
 
     public Password(){
 
     }
 
-    public Password(String pass, Site site){
+    public Password(String pass, Site site, String user){
         this.site = site;
         this.key = generateKey();
         this.pass = encryptWithKey(pass,key);
+        this.user = user;
     }
 
     private static byte[] ivGenerate(){
@@ -128,15 +131,17 @@ public class Password {
         }
         return null;
     }
+    @JsonProperty("encryptedPassword")
     public String getEncryptedPassword(){
         return pass;
     }
+    @JsonProperty("encryptedPassword")
     public void setEncyptedPassword(String pass){
         this.pass = pass;
     }
     @JsonIgnore
-    public String getPassword(){
-        return decryptedWithKey(pass,key);
+    public String getPassword(String usrKey){
+        return decryptedWithKey(pass,usrKey);
     }
     public void setPassword(String newPass){
         this.pass = encrypt(newPass);
@@ -149,6 +154,9 @@ public class Password {
     }
     public String getKey(){
         return key;
+    }
+    public String getUser(){
+        return user;
     }
     public String encryptWithKey(String password, String userKey){
         try{
@@ -172,6 +180,7 @@ public class Password {
         return null;
     }
     public String decryptedWithKey(String encryptedPassword, String userKey){
+        System.out.println("decrypting " + encryptedPassword + " with key " + userKey);
         try {
             byte[] encryptedWithIV = Base64.getDecoder().decode(encryptedPassword);
             if (encryptedWithIV.length < 17){
