@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/api/passwords")
 public final class PasswordController {
     
+    private final String dataPath = "src\\main\\java\\JPWP\\backend\\database\\passwords.json";
     // private Map<String, Password> passwordStore = new HashMap<>();
     private List<Password> passwordStore;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -109,7 +110,7 @@ public final class PasswordController {
 
     public void saveToFile(){
         try{
-            objectMapper.writeValue(new File("src\\main\\java\\JPWP\\backend\\database\\passwords.json"),passwordStore);
+            objectMapper.writeValue(new File(dataPath),passwordStore);
         }catch(IOException e){
             System.out.println("Error saving passwords: "+ e);
         }
@@ -117,7 +118,7 @@ public final class PasswordController {
 
     public void loadData(){
         try{ 
-            File file = new File("src\\main\\java\\JPWP\\backend\\database\\passwords.json");
+            File file = new File(dataPath);
             if (file.exists() && file.length()>0) {
                 passwordStore = objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, Password.class ));
             }else{
