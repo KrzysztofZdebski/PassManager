@@ -36,6 +36,7 @@ public final class PasswordController {
     public ResponseEntity<String> savePassword(@RequestParam String siteName, @RequestParam String passwordName, @RequestParam String user) {
         Site site = new Site(siteName);
         Password password = new Password(passwordName, site, user);
+        String key = password.getKey();
 
         boolean updated = DataWriter.updatePassword(dataPath, siteName, user, password);
 
@@ -46,8 +47,9 @@ public final class PasswordController {
             System.out.println("Password not found. Adding a new entry.");
             // passwordStore.add(password);
             // saveToFile();
-            return ResponseEntity.ok("Password added!");
+            return ResponseEntity.ok(key);
         }
+
     }
 
     @GetMapping("/get")
