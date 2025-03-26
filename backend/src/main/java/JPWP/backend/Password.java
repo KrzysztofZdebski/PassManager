@@ -14,13 +14,14 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty; 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.gson.annotations.SerializedName; 
 
 public final class Password {
     private  final String SECRET_KEY = "my_super_secret_key_ho_ho_ho";
     private  final String SALT = "ssshhhhhhhhhhh!!!!";
     private  String key = new String();
-    @JsonProperty("encryptedPassword")
+    @SerializedName("encryptedPassword")
     private String pass;
     private Site site;    
     private String user;
@@ -179,6 +180,7 @@ public final class Password {
         return null;
     }
     public String decryptedWithKey(String encryptedPassword, String userKey){
+        System.out.println("decrypting " + encryptedPassword + " with key " + userKey);
         try {
             byte[] encryptedWithIV = Base64.getDecoder().decode(encryptedPassword);
             if (encryptedWithIV.length < 17){

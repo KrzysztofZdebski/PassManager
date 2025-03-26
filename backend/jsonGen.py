@@ -30,4 +30,4 @@ def generate_large_json_file(file_path, num_entries):
     print(f"Generated {num_entries} entries in {file_path}")
 
 # Generate a JSON file with 10,000 entries
-generate_large_json_file("large_passwords.json", 10000000)
+generate_large_json_file("large_passwords.json", 1000000)

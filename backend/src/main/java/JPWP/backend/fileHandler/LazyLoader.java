@@ -1,4 +1,4 @@
-package JPWP.backend;
+package JPWP.backend.fileHandler;
 
 import java.io.FileReader;
 import java.util.Iterator;
@@ -7,6 +7,8 @@ import java.util.stream.StreamSupport;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
+
+import JPWP.backend.Password;
 
 public class LazyLoader {
     private static final Gson gson = new Gson();
@@ -36,10 +38,10 @@ public class LazyLoader {
                     try {
                         Password password = gson.fromJson(jsonReader, Password.class);
                         // Debug log to check the loaded Password object
-                        System.out.println("Loaded Password: " + password);
-                        System.out.println("Key: " + password.getKey());
-                        System.out.println("Encrypted Password: " + password.getEncryptedPassword());
-                        System.out.println("User: " + password.getUser());
+                        // System.out.println("Loaded Password: " + password);
+                        // System.out.println("Key: " + password.getKey());
+                        // System.out.println("Encrypted Password: " + password.getEncryptedPassword());
+                        // System.out.println("User: " + password.getUser());
                         return password;
                     } catch (Exception e) {
                         throw new RuntimeException("Error parsing JSON", e);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import JPWP.backend.*;
+import JPWP.backend.fileHandler.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/api/passwords")
 public final class PasswordController {
     
-    private final String dataPath = "src\\main\\java\\JPWP\\backend\\database\\large_passwords.json";
+    private final String dataPath = "src\\main\\java\\JPWP\\backend\\database\\passwords.json";
     // private Map<String, Password> passwordStore = new HashMap<>();
     private List<Password> passwordStore;
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -35,11 +36,18 @@ public final class PasswordController {
     public ResponseEntity<String> savePassword(@RequestParam String siteName, @RequestParam String passwordName, @RequestParam String user) {
         Site site = new Site(siteName);
         Password password = new Password(passwordName, site, user);
-        String key = password.getKey();
-        passwordStore.add(password);
-        saveToFile();
-        System.out.println("Password saved!");
-        return ResponseEntity.ok(key);
+
+        boolean updated = DataWriter.updatePassword(dataPath, siteName, user, password);
+
+        if (updated) {
+            System.out.println("Password updated!");
+            return ResponseEntity.ok("Password updated!");
+        } else {
+            System.out.println("Password not found. Adding a new entry.");
+            // passwordStore.add(password);
+            // saveToFile();
+            return ResponseEntity.ok("Password added!");
+        }
     }
 
     @GetMapping("/get")
@@ -49,15 +57,16 @@ public final class PasswordController {
                                     .filter(p -> p.getSite().getNameSite().equals(siteName) && p.getUser().equals(user))
                                     .findFirst()
                                     .orElse(null);
+        if (pass == null) {
+            return ResponseEntity.ok("Password not found");
+        }
+        return ResponseEntity.ok(pass.getPassword());
         // Password getPassword = passwordStore.get(siteName);
         // if(getPassword == null){
         //     return ResponseEntity.ok("Not found");
         // }
         // return ResponseEntity.ok(getPassword.getPassword());
-        if (pass == null) {
-            return ResponseEntity.ok("Password not found");
-        }
-        return ResponseEntity.ok(pass.getPassword());
+        
     }
 
 
@@ -74,28 +83,15 @@ public final class PasswordController {
 
     @DeleteMapping("/remove")
     public ResponseEntity<String> removePassword(@RequestParam String siteName, @RequestParam String user) {
-        System.out.println("Attempting to delete siteName: " + siteName + " From user " + user); // Debug log
-        // Password pass = passwordStore.parallelStream()
-        Password pass = LazyLoader.loadPasswords(dataPath)
-                                    .filter(p -> p.getSite().getNameSite().equals(siteName) && p.getUser().equals(user))
-                                    .findFirst()
-                                    .orElse(null);
-        if (pass == null) {
+        boolean removed = DataWriter.removePassword(dataPath, siteName, user);
+
+        if (removed) {
+            System.out.println("Password removed");
+            return ResponseEntity.ok("Password removed");
+        } else {
             System.out.println("Password not found");
             return ResponseEntity.ok("Password not found");
         }
-        passwordStore.remove(pass);
-        saveToFile();
-        System.out.println("Password removed");
-        return ResponseEntity.ok("Password removed");
-        // System.out.println("Attempting to delete siteName: " + siteName); // Debug log
-        // if (passwordStore.containsKey(siteName)) {
-        //     passwordStore.remove(siteName);
-        //     saveToFile();
-        //     return ResponseEntity.ok("Password removed");
-        // } else {
-        //     return ResponseEntity.ok("Password not found");
-        // }
     }
 
     @GetMapping("/generate")
