@@ -36,7 +36,7 @@ $(document).ready(function() {
             let userN = await getUserFromStorage();
 
             // Send the user data to the background script (optional)
-            chrome.runtime.sendMessage({ type: "Add", userN });
+            // chrome.runtime.sendMessage({ type: "Add", userN });
 
             // Save the password to the server
             await fetch(serverUrl + `/save?passwordName=${encodeURIComponent(password)}&siteName=${encodeURIComponent(siteName)}&user=${encodeURIComponent(userN.username)}`, {

@@ -24,7 +24,7 @@ async function authenticate(username, password) {
         if (auth) {
             const data = auth;
             chrome.storage.local.set({ 'user': { username, password } });
-            chrome.runtime.sendMessage({ type: "login", data, username });
+            // chrome.runtime.sendMessage({ type: "login", data, username });
             // Redirect to another page or perform further actions
             window.location.href = '\\windows\\popup\\popup.html';
             return true;

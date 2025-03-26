@@ -34,10 +34,11 @@ $(document).ready(() => {
         $(".listItem").show();
     });
 
-    $("#delete").on("click", () => {
+    $("#delete").on("click", async () => {
         if(!confirm("Are you sure you want to delete the selected passwords?")) return;
         let checkboxes = document.querySelectorAll("input[type='checkbox']");
         let checked = [];
+        let user = await getUserFromStorage();
         checkboxes.forEach((checkbox, index) => {
             if (checkbox.checked) {
                 checked.push(index);
@@ -51,11 +52,8 @@ $(document).ready(() => {
             });
             toDelete.forEach(async item => {
                 let index = sites.indexOf(item);
-                let user = {};
-                chrome.storage.local.get("user", data => {
-                    user = data.user || {};
-                });
                 sites.splice(index, 1);
+                chrome.runtime.sendMessage({ type: "delete", user: user});
                 await fetch(serverUrl + `/remove?siteName=${encodeURIComponent(item.siteName)}&user=${user.username}`,{
                     method: "DELETE"
                 })
@@ -63,7 +61,7 @@ $(document).ready(() => {
                     console.error("DeleteError:", error);
                 });
             });
-            chrome.storage.local.set({ data: sites }, () => {
+            chrome.storage.local.set({ 'data': sites }, () => {
                 refresh();
             });
         });
@@ -174,6 +172,18 @@ function showPassword(index) {
         })
         .catch(error => {
             console.error("GetError:", error);
+        });
+    });
+}
+
+function getUserFromStorage() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get('user', (data) => {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                resolve(data.user || {});
+            }
         });
     });
 }

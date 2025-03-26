@@ -23,15 +23,17 @@ public class Password {
     @JsonProperty("encryptedPassword")
     private String pass;
     private Site site;    
+    private String user;
 
     public Password(){
 
     }
 
-    public Password(String pass, Site site){
+    public Password(String pass, Site site, String user){
         this.site = site;
         this.key = generateKey();
         this.pass = encryptWithKey(pass,key);
+        this.user = user;
     }
 
     private static byte[] ivGenerate(){
@@ -149,6 +151,9 @@ public class Password {
     }
     public String getKey(){
         return key;
+    }
+    public String getUser(){
+        return user;
     }
     public String encryptWithKey(String password, String userKey){
         try{
