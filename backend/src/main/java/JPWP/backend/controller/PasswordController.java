@@ -53,14 +53,20 @@ public final class PasswordController {
     @GetMapping("/get")
     public ResponseEntity<String> getPassword(@RequestParam String siteName, @RequestParam String key, @RequestParam String user) {
         // Password pass = passwordStore.parallelStream()
-        Password pass = LazyLoader.loadPasswords(dataPath)
-                                    .filter(p -> p.getSite().getNameSite().equals(siteName) && p.getUser().equals(user))
-                                    .findFirst()
-                                    .orElse(null);
-        if (pass == null) {
-            return ResponseEntity.ok("Password not found");
+        try (Stream<Password> passwordStream = LazyLoader.loadPasswords(dataPath)) {
+            Password pass = passwordStream
+                                .filter(p -> p.getSite().getNameSite().equals(siteName) && p.getUser().equals(user))
+                                .findFirst()
+                                .orElse(null);
+    
+            if (pass == null) {
+                return ResponseEntity.ok("Password not found");
+            }
+            return ResponseEntity.ok(pass.getPassword(key));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("An error occurred while retrieving the password.");
         }
-        return ResponseEntity.ok(pass.getPassword());
         // Password getPassword = passwordStore.get(siteName);
         // if(getPassword == null){
         //     return ResponseEntity.ok("Not found");
@@ -114,25 +120,23 @@ public final class PasswordController {
         // }
     }
 
-    public void loadData(){
-        try{ 
-            File file = new File(dataPath);
-            if (file.exists() && file.length()>0) {
-                passwordStore = objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, Password.class ));
-            }else{
-                System.out.println("No existing password file found. Creating a new one.");
-                passwordStore = new ArrayList<>();
-            }
+    // public void loadData(){
+    //     try{ 
+    //         File file = new File(dataPath);
+    //         if (file.exists() && file.length()>0) {
+    //             passwordStore = objectMapper.readValue(file, objectMapper.getTypeFactory().constructCollectionType(List.class, Password.class ));
+    //         }else{
+    //             System.out.println("No existing password file found. Creating a new one.");
+    //             passwordStore = new ArrayList<>();
+    //         }
         
-        }catch(IOException e){
-            System.out.println("Error loading passwords: "+ e);
-            passwordStore = new ArrayList<>();
-        }
-    }
+    //     }catch(IOException e){
+    //         System.out.println("Error loading passwords: "+ e);
+    //         passwordStore = new ArrayList<>();
+    //     }
+    // }
 
-    public static Stream<Password> findByUser(List<Password> entries, String userName) {
-        return entries.stream().filter(entry -> entry.getUser().equals(userName));
-    }
+
 
     
     

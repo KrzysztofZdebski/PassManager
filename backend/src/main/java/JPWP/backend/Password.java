@@ -140,8 +140,8 @@ public final class Password {
         this.pass = pass;
     }
     @JsonIgnore
-    public String getPassword(){
-        return decryptedWithKey(pass,key);
+    public String getPassword(String usrKey){
+        return decryptedWithKey(pass,usrKey);
     }
     public void setPassword(String newPass){
         this.pass = encrypt(newPass);

@@ -37,11 +37,15 @@ public class DataWriter {
                     gson.toJson(password, Password.class, writer); // Write the original password
                 }
             }
+            if(!updated){
+                gson.toJson(updatedPassword, Password.class, writer);
+            }
 
             reader.endArray();
             reader.close();
             writer.endArray();
             writer.close();
+            Thread.sleep(1000);
             // Replace the original file with the updated file
             if (!tempFile.exists()) {
                 throw new IOException("Temporary file does not exist: " + tempFile.getAbsolutePath());
@@ -58,6 +62,9 @@ public class DataWriter {
             return updated;
 
         } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } catch (InterruptedException e) {
             e.printStackTrace();
             return false;
         }
@@ -87,11 +94,17 @@ public class DataWriter {
             }
 
             reader.endArray();
+            reader.close();
             writer.endArray();
+            writer.close();
 
             // Replace the original file with the updated file
-            if (!inputFile.delete() || !tempFile.renameTo(inputFile)) {
-                throw new IOException("Failed to replace the original file with the updated file.");
+            try {
+                Files.move(tempFile.toPath(), inputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("File replaced successfully.");
+            } catch (IOException e) {
+                System.err.println("Failed to replace the original file: " + e.getMessage());
+                throw e;
             }
 
             return removed;

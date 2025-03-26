@@ -7,7 +7,7 @@ public class SensitiveFieldExclusionStrategy implements ExclusionStrategy {
     @Override
     public boolean shouldSkipField(FieldAttributes f) {
         // Exclude fields by name
-        return f.getName().equals("SECRET_KEY") || f.getName().equals("SALT");
+        return f.getName().equals("SECRET_KEY") || f.getName().equals("SALT") || f.getName().equals("key");
     }
 
     @Override

@@ -53,6 +53,7 @@ public class LazyLoader {
             return StreamSupport.stream(iterable.spliterator(), false)
                                 .onClose(() -> {
                                     try {
+                                        System.out.println("Closing JsonReader...");
                                         jsonReader.close();
                                     } catch (Exception e) {
                                         e.printStackTrace();
