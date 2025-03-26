@@ -13,6 +13,8 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec; 
 import javax.crypto.spec.SecretKeySpec;
 
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty; 
 
@@ -44,7 +46,7 @@ public class Password {
         Random rand = new Random();
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         StringBuilder generatedKey  = new StringBuilder();
-        for(int i = 0;i < 64;i++){
+        for(int i = 0;i < 256;i++){
             int index = rand.nextInt(0,characters.length());
             generatedKey.append(characters.charAt(index));
         }
@@ -68,11 +70,10 @@ public class Password {
 
     public String generatePassword(String options){
         Random rand = new Random();
-        int length = rand.nextInt(10,16);
         options = "skibidi";
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
         StringBuilder generatedPassword = new StringBuilder();
-        for(int i = 0; i < length; i++){
+        for(int i = 0; i < 256; i++){
             int index = rand.nextInt(characters.length());
             generatedPassword.append((characters.charAt(index)));
         }
