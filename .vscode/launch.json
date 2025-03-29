@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "DataWriter",
+            "request": "launch",
+            "mainClass": "JPWP.backend.fileHandler.DataWriter",
+            "projectName": "backend"
+        },
+        {
+            "type": "java",
+            "name": "LazyLoader",
+            "request": "launch",
+            "mainClass": "JPWP.backend.fileHandler.LazyLoader",
+            "projectName": "backend"
+        },
+        {
+            "type": "java",
             "name": "LazyLoader",
             "request": "launch",
             "mainClass": "JPWP.backend.LazyLoader",

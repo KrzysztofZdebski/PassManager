@@ -2,5 +2,13 @@
     "java.compile.nullAnalysis.mode": "automatic",
     "java.debug.settings.onBuildFailureProceed": true,
     "java.configuration.updateBuildConfiguration": "interactive",
-    "json.format.keepLines": false
+    "json.format.keepLines": false,
+    "files.exclude": {
+        "**/node_modules": true,
+        "**/large_passwords.json": true
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/large_passwords.json": true
+    }
 }

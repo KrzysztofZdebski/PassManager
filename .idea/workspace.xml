@@ -1,8 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/fangi/Desktop/AGH&quot;
+  <component name="ChangeListManager">
+    <list default="true" id="c9d4abee-0b59-41f6-a958-3a6a8a0a4a36" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/jsonGen.py" beforeDir="false" afterPath="$PROJECT_DIR$/backend/jsonGen.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/Password.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/Password.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/controller/PasswordController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/controller/PasswordController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/database/passwords.json" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/database/passwords.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/fileHandler/DataWriter.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/fileHandler/DataWriter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/fileHandler/LazyLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/fileHandler/LazyLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/fileHandler/SensitiveFieldExclusionStrategy.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/JPWP/backend/fileHandler/SensitiveFieldExclusionStrategy.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/windows/add/add.css" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/windows/add/add.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/windows/login/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/windows/login/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/windows/login/login.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/windows/login/login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/windows/popup/popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/windows/popup/popup.js" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2v08zytrsg3NonZlwaaZWwwSdAz" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "test",
+    "last_opened_file_path": "C:/Users/fangi/Desktop/AGH",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fdfe4dae3a2d-intellij.indexing.shared.core-IU-243.22562.218" />
+        <option value="bundled-js-predefined-d6986cc7102b-deb605915726-JavaScript-IU-243.22562.218" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c9d4abee-0b59-41f6-a958-3a6a8a0a4a36" name="Changes" comment="" />
+      <created>1743270899017</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1743270899017</updated>
+      <workItem from="1743270901232" duration="2000" />
+    </task>
+    <servers />
+  </component>
 </project>

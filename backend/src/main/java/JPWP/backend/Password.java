@@ -158,6 +158,9 @@ public final class Password {
     public String getUser(){
         return user;
     }
+    public void setUser(String user){
+        this.user = user;
+    }
     public String encryptWithKey(String password, String userKey){
         try{
             byte[] iv = ivGenerate();

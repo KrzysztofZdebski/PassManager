@@ -1,14 +1,13 @@
 package JPWP.backend.controller;
 
-import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import JPWP.backend.*;
 import JPWP.backend.fileHandler.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
+
+import javax.xml.crypto.Data;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,16 +17,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @RestController
 @RequestMapping("/api/passwords")
 public final class PasswordController {
     
-    private final String dataPath = "src\\main\\java\\JPWP\\backend\\database\\passwords.json";
+    private final String dataPath = "src\\main\\java\\JPWP\\backend\\database\\large_passwords.json";
+    private final String userPath = "src\\main\\java\\JPWP\\backend\\database\\users.json";
+    // private final Object fileLock = new Object();
+
     // private Map<String, Password> passwordStore = new HashMap<>();
     private List<Password> passwordStore;
-    private final ObjectMapper objectMapper = new ObjectMapper();
     public PasswordController(){
         // loadData();
     }
@@ -37,16 +38,14 @@ public final class PasswordController {
         Site site = new Site(siteName);
         Password password = new Password(passwordName, site, user);
         String key = password.getKey();
+        DataWriter dataWriter = new DataWriter();
 
-        boolean updated = DataWriter.updatePassword(dataPath, siteName, user, password);
-
+        boolean updated;
+        updated = dataWriter.updatePassword(dataPath, siteName, user, password);
+    
         if (updated) {
-            System.out.println("Password updated!");
-            return ResponseEntity.ok("Password updated!");
+            return ResponseEntity.ok(key); // Send response only after file operations are complete
         } else {
-            System.out.println("Password not found. Adding a new entry.");
-            // passwordStore.add(password);
-            // saveToFile();
             return ResponseEntity.ok(key);
         }
 
@@ -91,13 +90,15 @@ public final class PasswordController {
 
     @DeleteMapping("/remove")
     public ResponseEntity<String> removePassword(@RequestParam String siteName, @RequestParam String user) {
-        boolean removed = DataWriter.removePassword(dataPath, siteName, user);
+        DataWriter dataWriter = new DataWriter();
+        boolean removed;
+        removed = dataWriter.removePassword(dataPath, siteName, user);
 
         if (removed) {
-            System.out.println("Password removed");
+            // System.out.println("Password removed");
             return ResponseEntity.ok("Password removed");
         } else {
-            System.out.println("Password not found");
+            // System.out.println("Password not found");
             return ResponseEntity.ok("Password not found");
         }
     }
@@ -109,10 +110,39 @@ public final class PasswordController {
         return ResponseEntity.ok(generatedPassword);
     }
 
-    @PostMapping("/authenticate")
+    @PostMapping("/authenticate/login")
     public ResponseEntity<Boolean> authenticate(@RequestParam String username, @RequestParam String password) {
-        return ResponseEntity.ok(true);
+        try (Stream<User> userStream = LazyLoader.loadUsers(userPath)) {
+            boolean isAuthenticated = userStream
+                                        .filter(u -> u.userName().equals(username) && u.password().equals(password))
+                                        .findFirst()
+                                        .isPresent();
+            return ResponseEntity.ok(isAuthenticated);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(false);
+        }
     }
+
+    @PostMapping("/authenticate/register")
+    public ResponseEntity<String> registerUser(@RequestParam String username, @RequestParam String password) {
+        boolean registered = DataWriter.addUser(userPath, username, password);
+        if (!registered) {
+            return ResponseEntity.status(400).body("User already exists!");
+        }
+        return ResponseEntity.ok("User registered successfully!");
+    }
+
+    // @GetMapping("/sync")
+    // public List<Password> getMethodName(@RequestParam String user) {
+    //     Stream<Password> passwordStream = LazyLoader.loadPasswords(dataPath);
+    //     List<Password> passwords = passwordStream.filter(p -> p.getUser().equals(user))
+    //                                              .toList();
+                                                 
+    //     return passwords;
+    // }
+    
+    
 
     public void saveToFile(){
         // try{

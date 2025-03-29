@@ -1,15 +1,15 @@
 const serverUrl = 'https://localhost:5001/api/passwords';
-// chrome.storage.local.get("user", data => {
-//     let user = data.user || {};
-//     if(!authenticate(user.username, user.password)) {
-//         chrome.storage.local.remove("user");
-//     }
-// });
+chrome.storage.local.get("user", data => {
+    let user = data.user || {};
+    document.getElementById("username").value = user.username || "";
+    document.getElementById("password").value = user.password || "";
+});
+
 
 async function authenticate(username, password) {
     let auth = false;
     try {
-        const response = await fetch(serverUrl + `/authenticate?username=${username}&password=${password}`, {
+        const response = await fetch(serverUrl + `/authenticate/login?username=${username}&password=${password}`, {
             method: "POST",
         })
         .then(response => response.text())
@@ -21,16 +21,14 @@ async function authenticate(username, password) {
             auth = false;
         });
 
-        if (auth) {
-            const data = auth;
+        if (auth === "true") {
             chrome.storage.local.set({ 'user': { username, password } });
             // chrome.runtime.sendMessage({ type: "login", data, username });
             // Redirect to another page or perform further actions
             window.location.href = '\\windows\\popup\\popup.html';
             return true;
         } else {
-            const errorData = await response.json();
-            errorMessage.textContent = errorData.message || "Invalid credentials";
+            errorMessage.textContent = "Invalid username or password. Please try again.";
             errorMessage.style.display = "block";
             return false;
         }

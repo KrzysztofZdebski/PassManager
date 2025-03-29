@@ -1,6 +1,8 @@
 const serverUrl = "https://localhost:5001/api/passwords";
+loadKeysToStorage();
 
 $(document).ready(() => {
+    // sync();
     refresh();
 
     $("#find").on("click", () => {
@@ -186,4 +188,62 @@ function getUserFromStorage() {
             }
         });
     });
+}
+
+// function sync() {
+//     chrome.storage.local.get("user", data => {
+//         let user = data.user || {};
+//         if (user.username === undefined) {
+//             location.href = "\\windows\\login\\login.html";
+//         }
+//         fetch(serverUrl + `/sync?user=${encodeURIComponent(user.username)}`, {
+//             method: "GET",
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//             chrome.runtime.sendMessage({ type: "sync", data, user });
+//         })
+//     });
+// }
+
+async function loadKeysToStorage() {
+    await fetch("keys.json") // Ensure keys.json is in the same directory as your extension
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to load keys.json: ${response.statusText}`);
+            }
+            return response.json(); // Parse the JSON content
+        })
+        .then(data => {
+            console.log("Raw data from keys.json:", data);
+
+            // Ensure data.user0 exists
+            data = data || {};
+            data = data.user0;
+
+            if (!data || typeof data !== "object") {
+                console.error("Expected data.user0 to be an object, but got:", data);
+                return;
+            }
+
+            let toSave = [];
+            console.log("Loaded data:", data);
+
+            // Iterate over the nested structure
+            Object.values(data).forEach(entry => {
+                Object.entries(entry).forEach(([siteName, key]) => {
+                    toSave.push({ siteName, key });
+                });
+            });
+
+            console.log("Data to save:", toSave);
+
+            // Store the flattened data in chrome.storage.local
+            chrome.storage.local.set({ 'data': toSave }, () => {
+                console.log("Data successfully stored in chrome.storage.local");
+            });
+        })
+        .catch(error => {
+            console.error("Error loading keys.json:", error);
+        });
 }
