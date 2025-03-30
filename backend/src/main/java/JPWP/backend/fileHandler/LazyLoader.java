@@ -39,14 +39,10 @@ public class LazyLoader {
                             insideUser = false; // Move to the next user
                             return jsonReader.hasNext(); // Check if there are more users in the JSON array
                         }
-
                         // If no more passwords in the current user's array, check for more users
-                        if (!insideUser && jsonReader.hasNext()) {
-                            return true; // More users in the JSON array
-                        }
-
                         // If neither, return false (end of the JSON array)
-                        return false;
+
+                        return !insideUser && jsonReader.hasNext();
                     } catch (Exception e) {
                         e.printStackTrace();
                         return false;
