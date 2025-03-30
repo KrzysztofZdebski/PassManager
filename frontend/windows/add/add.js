@@ -1,6 +1,7 @@
 const serverUrl = 'https://localhost:5001/api/passwords';
 
 $(document).ready(function() {
+    $('#loadingScreen').hide();
 
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, tabs => {
         let openedURL = tabs[0].url;
@@ -31,12 +32,12 @@ $(document).ready(function() {
         let password = $('#password').val();
         let key = '';
 
+        // Show the loading screen
+        $('#loadingScreen').show();
+
         try {
             // Use the Promise wrapper to get the user data
             let userN = await getUserFromStorage();
-
-            // Send the user data to the background script (optional)
-            // chrome.runtime.sendMessage({ type: "Add", userN });
 
             // Save the password to the server
             await fetch(serverUrl + `/save?passwordName=${encodeURIComponent(password)}&siteName=${encodeURIComponent(siteName)}&user=${encodeURIComponent(userN.username)}`, {
@@ -67,6 +68,9 @@ $(document).ready(function() {
             });
         } catch (error) {
             console.error("Error retrieving user data:", error);
+        } finally {
+            // Hide the loading screen
+            $('#loadingScreen').hide();
         }
     });
 

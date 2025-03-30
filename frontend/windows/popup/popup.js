@@ -160,21 +160,30 @@ function hidePasswords() {
 function showPassword(index) {
     let passwordLabel = $(`#passLabel${index}`);
     let user = {};
+
+    // Show a spinner in the password label
+    passwordLabel.html('<span class="spinner"></span>');
+
     chrome.storage.local.get("user", data => {
         user = data.user || {};
     });
+
     chrome.storage.local.get("data", data => {
         let keys = data.data || [];
         let key = keys[index].key;
         let name = keys[index].siteName;
+
         fetch(serverUrl + `/get?siteName=${encodeURIComponent(name)}&key=${encodeURIComponent(key)}&user=${encodeURIComponent(user.username)}`)
-        .then(response => response.text())
-        .then(data => {
-            passwordLabel.text(data);
-        })
-        .catch(error => {
-            console.error("GetError:", error);
-        });
+            .then(response => response.text())
+            .then(data => {
+                // Replace the spinner with the actual password
+                passwordLabel.text(data);
+            })
+            .catch(error => {
+                console.error("GetError:", error);
+                // Show an error message if the fetch fails
+                passwordLabel.text("Error loading password");
+            });
     });
 }
 

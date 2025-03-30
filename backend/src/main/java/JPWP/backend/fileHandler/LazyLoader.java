@@ -83,7 +83,7 @@ public class LazyLoader {
                 }
             };
 
-            return StreamSupport.stream(iterable.spliterator(), false)
+            return StreamSupport.stream(iterable.spliterator(), true)
                                 .onClose(() -> {
                                     try {
                                         jsonReader.close();
