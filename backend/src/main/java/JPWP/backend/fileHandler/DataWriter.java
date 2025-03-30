@@ -19,6 +19,8 @@ public class DataWriter {
                                     .setExclusionStrategies(new SensitiveFieldExclusionStrategy())
                                     .create();
 
+    
+
     public boolean updatePassword(String filePath, String siteName, String user, Password updatedPassword) {
         File inputFile = new File(filePath);
         File tempFile = new File(filePath + ".tmp");

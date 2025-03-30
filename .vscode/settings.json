@@ -10,5 +10,7 @@
     "search.exclude": {
         "**/node_modules": true,
         "**/large_passwords.json": true
-    }
+    },
+    "java.project.sourcePaths": [],
+    "java.project.referencedLibraries": []
 }

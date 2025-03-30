@@ -1,6 +1,7 @@
 package JPWP.backend.fileHandler;
 
 import java.io.FileReader;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -25,24 +26,27 @@ public class LazyLoader {
 
             Iterable<Password> iterable = () -> new Iterator<>() {
                 private String currentUser = null;
-                private Iterator<Password> passwordIterator = null;
+                private boolean insideUser = false;
 
                 @Override
                 public boolean hasNext() {
                     try {
-                        // If the current password iterator is null or exhausted, load the next user
-                        while ((passwordIterator == null || !passwordIterator.hasNext()) && jsonReader.hasNext()) {
-                            // Read the next user entry as a Map<String, List<Password>>
-                            Map<String, List<Password>> userPasswords = gson.fromJson(
-                                jsonReader, new TypeToken<Map<String, List<Password>>>() {}.getType()
-                            );
-
-                            // Extract the user and their passwords
-                            Map.Entry<String, List<Password>> entry = userPasswords.entrySet().iterator().next();
-                            currentUser = entry.getKey();
-                            passwordIterator = entry.getValue().iterator();
+                        // Check if there are more passwords in the current user's array or more users in the JSON array
+                        if (insideUser) {
+                            if(jsonReader.hasNext()) return true;
+                            jsonReader.endArray(); // End the current user's passwords array
+                            jsonReader.endObject(); // End the current user's object
+                            insideUser = false; // Move to the next user
+                            return jsonReader.hasNext(); // Check if there are more users in the JSON array
                         }
-                        return passwordIterator != null && passwordIterator.hasNext();
+
+                        // If no more passwords in the current user's array, check for more users
+                        if (!insideUser && jsonReader.hasNext()) {
+                            return true; // More users in the JSON array
+                        }
+
+                        // If neither, return false (end of the JSON array)
+                        return false;
                     } catch (Exception e) {
                         e.printStackTrace();
                         return false;
@@ -51,12 +55,35 @@ public class LazyLoader {
 
                 @Override
                 public Password next() {
-                    if (passwordIterator == null || !passwordIterator.hasNext()) {
-                        throw new NoSuchElementException("No more passwords available");
+                    try {
+                        if (!insideUser) {
+                            // Start reading the next user object
+                            if (jsonReader.hasNext()) {
+                                jsonReader.beginObject();
+                                currentUser = jsonReader.nextName(); // Read the user key
+                                jsonReader.beginArray(); // Start reading the passwords array
+                                insideUser = true;
+                            }else{
+                                return null; // No more users to read
+                            }
+                            
+                        }
+
+                        // Read the next password in the current user's array
+                        if (jsonReader.hasNext()) {
+                            Password password = gson.fromJson(jsonReader, Password.class);
+                            password.setUser(currentUser); // Set the user for the password
+                            return password;
+                        } else {
+                            // End the current user's passwords array and object
+                            jsonReader.endArray();
+                            jsonReader.endObject();
+                            insideUser = false; // Move to the next user
+                            return next(); // Recursively call next() to move to the next user
+                        }
+                    } catch (Exception e) {
+                        throw new NoSuchElementException("Error reading next password: " + e.getMessage());
                     }
-                    Password password = passwordIterator.next();
-                    password.setUser(currentUser); // Set the user for the password
-                    return password;
                 }
             };
 
@@ -105,6 +132,7 @@ public class LazyLoader {
                 }
             };
 
+
             return StreamSupport.stream(iterable.spliterator(), false)
                                 .onClose(() -> {
                                     try {
@@ -119,10 +147,5 @@ public class LazyLoader {
             return Stream.empty();
         }
     }
-
-    // public static void main(String[] args) {
-    //     loadUsers("C:\\Users\\fangi\\Desktop\\AGH\\JPWP\\PassManager\\backend\\src\\main\\java\\JPWP\\backend\\database\\users.json")
-    //         .map(p -> p.userName() + " " + p.password())
-    //         .forEach(System.out::println);
-    // }
+   
 }

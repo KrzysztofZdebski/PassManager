@@ -19,17 +19,18 @@ def generate_password_entry():
 def generate_user_entry(num_passwords):
     return [generate_password_entry() for _ in range(num_passwords)]
 
-# Generate a JSON file with the desired structure
+# Function to generate a JSON file with the desired structure
 def generate_large_json_file(file_path, num_users, passwords_per_user):
-    data = {}
+    data = []  # Use a list to store each user as a separate JSON object
     for _ in range(num_users):
         username = generate_random_string(8)  # Generate a random username
-        data[username] = generate_user_entry(passwords_per_user)
+        user_entry = {username: generate_user_entry(passwords_per_user)}  # Create a user object
+        data.append(user_entry)  # Append the user object to the list
     
     # Write the data to a JSON file
     with open(file_path, "w") as file:
-        json.dump([data], file, indent=4)
+        json.dump(data, file, indent=4)
     print(f"Generated {num_users} users with {passwords_per_user} passwords each in {file_path}")
 
-# Generate a JSON file with 1,000,000 users, each having 2 passwords
+# Generate a JSON file with 10 users, each having 2 passwords
 generate_large_json_file("large_passwords.json", 1000000, 2)
