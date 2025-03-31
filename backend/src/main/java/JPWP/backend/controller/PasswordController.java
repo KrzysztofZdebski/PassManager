@@ -5,9 +5,8 @@ import java.util.stream.Stream;
 import JPWP.backend.*;
 import JPWP.backend.fileHandler.*;
 
+import java.util.Iterator;
 import java.util.List;
-
-import javax.xml.crypto.Data;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -112,11 +111,20 @@ public final class PasswordController {
 
     @PostMapping("/authenticate/login")
     public ResponseEntity<Boolean> authenticate(@RequestParam String username, @RequestParam String password) {
-        try (Stream<User> userStream = LazyLoader.loadUsers(userPath)) {
-            boolean isAuthenticated = userStream
-                                        .filter(u -> u.userName().equals(username) && u.password().equals(password))
-                                        .findFirst()
-                                        .isPresent();
+        try{
+            Iterator<User> userIterator = LazyLoader.loadUsers(userPath);
+            boolean isAuthenticated = false;
+            while (userIterator.hasNext()) {
+                User user = userIterator.next();
+                if (user.userName().equals(username) && user.password().equals(password)) {
+                    isAuthenticated = true;
+                    break;
+                }
+            }
+            // boolean isAuthenticated = userStream
+            //                             .filter(u -> u.userName().equals(username) && u.password().equals(password))
+            //                             .findFirst()
+            //                             .isPresent();
             return ResponseEntity.ok(isAuthenticated);
         } catch (Exception e) {
             e.printStackTrace();

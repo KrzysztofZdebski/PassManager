@@ -2,12 +2,15 @@ package JPWP.backend.fileHandler;
 
 import java.io.FileReader;
 import java.io.Reader;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -17,10 +20,14 @@ import JPWP.backend.Password;
 import JPWP.backend.User;
 
 public class LazyLoader {
+    private static final Logger logger = LogManager.getLogger(LazyLoader.class);
     private static final Gson gson = new Gson();
 
     public static Stream<Password> loadPasswords(String filePath) {
         try {
+
+            // logMemoryUsage("Before processing passwords");
+
             JsonReader jsonReader = new JsonReader(new FileReader(filePath));
             jsonReader.beginArray(); // Start reading the JSON array
 
@@ -64,10 +71,10 @@ public class LazyLoader {
                             }
                             
                         }
-
                         // Read the next password in the current user's array
                         if (jsonReader.hasNext()) {
                             Password password = gson.fromJson(jsonReader, Password.class);
+                            // logMemoryUsage("Processing password for site: " + password.getSite().getNameSite());
                             password.setUser(currentUser); // Set the user for the password
                             return password;
                         } else {
@@ -82,7 +89,7 @@ public class LazyLoader {
                     }
                 }
             };
-
+            // logMemoryUsage("After processing passwords");
             return StreamSupport.stream(iterable.spliterator(), true)
                                 .onClose(() -> {
                                     try {
@@ -98,50 +105,38 @@ public class LazyLoader {
         }
     }
 
-    public static Stream<User> loadUsers(String filePath) {
+    public static Iterator<User> loadUsers(String filePath) {
         try {
-            JsonReader jsonReader = new JsonReader(new FileReader(filePath));
-
-            jsonReader.beginArray();
-
+            // JsonReader jsonReader = new JsonReader(new FileReader(filePath));
+            Reader reader = new FileReader(filePath);
+            List<User> userMap = gson.fromJson(reader, new TypeToken<List<User>>() {}.getType());
             Iterable<User> iterable = () -> new Iterator<>() {
+                private int index = 0;
+
                 @Override
                 public boolean hasNext() {
-                    try {
-                        return jsonReader.hasNext();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    }
+                    return index < userMap.size();
                 }
 
                 @Override
                 public User next() {
-                    try {
-                        User user = gson.fromJson(jsonReader, User.class);
-                        // Debug log to check the loaded User object
-                        // System.out.println("Loaded User: " + user);
-                        return user;
-                    } catch (Exception e) {
-                        throw new RuntimeException("Error parsing JSON", e);
+                    if (!hasNext()) {
+                        throw new NoSuchElementException("No more users to read.");
                     }
+                    return userMap.get(index++);
                 }
             };
 
-
-            return StreamSupport.stream(iterable.spliterator(), false)
-                                .onClose(() -> {
-                                    try {
-                                        jsonReader.close();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                });
+            return iterable.iterator();
 
         } catch (Exception e) {
             e.printStackTrace();
-            return Stream.empty();
+            return Collections.emptyIterator();
         }
     }
-   
+    private static void logMemoryUsage(String message) {
+        Runtime runtime = Runtime.getRuntime();
+        long usedMemory = runtime.totalMemory() - runtime.freeMemory();
+        logger.info("{} - Used Memory: {} MB", message, (usedMemory / 1024 / 1024));
+    }
 }
