@@ -13,11 +13,11 @@ Zadania praktyczne do wykonania znajduja się w archiwum zadania.zip
 
 **Przykładowe użycie:**
 ```java
-List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8);
+List<Integer> numbers = Arrays.asList(1, 1, 2, 3, 4, 5, 6, 6, 7, 8);
 EvenNumbersIterator iterator = new EvenNumbersIterator(numbers);
 
 while (iterator.hasNext()) {
-    System.out.println(iterator.next());  // Powinno wypisać: 2, 4, 6, 8
+    System.out.println(iterator.next());  // Powinno wypisać: 2, 4, 6, 6, 8
 }
 ```
 
