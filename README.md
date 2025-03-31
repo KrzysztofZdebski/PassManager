@@ -34,13 +34,12 @@ for (int i : new Range(5, 10)) {
     System.out.println(i);  // Powinno wypisać: 5, 6, 7, 8, 9
 }
 ```
-
 ---
 
-## Zadanie 3: Iterator liczb Fibonacciego
+## Zadanie 3: Iterator do czytania pliku JSON
 
 **Wymagania:**
-- Napisz klasę `FibonacciIterator`, która generuje kolejne liczby Fibonacciego.
+- Napisz klasę `FibonacciIterator`, która zwraca kolejne liczby Fibonacciego.
 - Klasa powinna implementować `Iterable<Integer>`.
 - Każde wywołanie `next()` zwraca kolejną liczbę Fibonacciego.
 
@@ -51,6 +50,22 @@ while (it.hasNext()) {
     System.out.println(it.next());  
 }
 // Powinno wypisać: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
+```
+---
+
+## Zadanie 4: Iterator liczb Fibonacciego
+
+**Wymagania:**
+- Napisz klasę `JsonIterator`, która zwraca zawartosci kolejnych obiektów z pliku data_zad3.json.
+- Klasa powinna implementować `Iterable<String>`.
+- Użyj ```java gson.fromJson(reader, new TypeToken<List<Person>>() {}.getType())``` do odczytania listy obiektów z pliku.
+
+**Przykładowe użycie:**
+```java
+Iterator<String> it = new JsonIterator(jsonFilePath.getPath()).iterator();
+while(it.hasNext()) {
+    System.out.println(it.next());  // Powinno wypisać: "name: exampleName age: exampleAge city: exampleCity"
+}
 ```
 # Generatory
 
