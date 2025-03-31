@@ -43,7 +43,7 @@ public class PasswordController {
         if(getPassword == null){
             return ResponseEntity.ok("Not found");
         }
-        return ResponseEntity.ok(getPassword.getPassword());
+        return ResponseEntity.ok(getPassword.getPassword(key));
     }
 
     @GetMapping("/all")

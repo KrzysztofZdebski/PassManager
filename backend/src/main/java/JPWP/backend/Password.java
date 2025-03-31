@@ -136,7 +136,7 @@ public class Password {
         this.pass = pass;
     }
     @JsonIgnore
-    public String getPassword(){
+    public String getPassword(String key){
         return decryptedWithKey(pass,key);
     }
     public void setPassword(String newPass){
