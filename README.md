@@ -69,5 +69,32 @@ while(it.hasNext()) {
 ```
 # Generatory
 
-## Zadanie 4: Generator liczb Fibonacciego
+## Zadanie 5: Generator liczb Fibonacciego
 
+**Wymagania:**
+
+- Napisz klasę `FibonacciGenerator` która generuje kolejne liczby Fibonacciego pojedynczo.
+- Klasa powinna implementować `Iterable<Integer>`
+
+```java
+FibonacciGenerator generator = new FibonacciGenerator();
+Stream.iterate(generator.iterator(), it -> it)
+        .map(it -> it.next())
+        .limit(10)
+        .forEach(System.out::println);  // Powinno wypisać: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34
+```
+
+---
+
+## Zadanie 6: Użycie generatora do odczytu dużych plików
+
+**Wymagania**
+
+- Napisz metode `lazyJSONLoader` która zwraca `Stream<String>`.
+- Używając klasy jsonReader odczytaj JSON Array obiekt po obiekcie bez wczytywania całego pliku na raz.
+- Na koniec możesz zmienić odczytywany plik na data_zad6_large.json by sprawdzić czy faktycznie plik nie jest wczytywany w całości.
+
+```java
+Stream<String> stream = tmp.lazyJSONLoader(jsonFilePath.getPath());
+stream.forEach(System.out::println);  // Powinno wypisać: "name: exampleName age: exampleAge city: exampleCity"
+```
