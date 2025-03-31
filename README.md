@@ -58,7 +58,7 @@ while (it.hasNext()) {
 **Wymagania:**
 - Napisz klasę `JsonIterator`, która zwraca zawartosci kolejnych obiektów z pliku data_zad3.json.
 - Klasa powinna implementować `Iterable<String>`.
-- Użyj ```java gson.fromJson(reader, new TypeToken<List<Person>>() {}.getType())``` do odczytania listy obiektów z pliku.
+- Użyj ```gson.fromJson(reader, new TypeToken<List<Person>>() {}.getType())``` do odczytania listy obiektów z pliku.
 
 **Przykładowe użycie:**
 ```java
