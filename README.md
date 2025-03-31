@@ -1,0 +1,1 @@
+Zadania praktyczne do wykonania znajduja się w archiwum zadania.zip
