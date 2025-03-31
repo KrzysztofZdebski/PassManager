@@ -36,7 +36,7 @@ for (int i : new Range(5, 10)) {
 ```
 ---
 
-## Zadanie 3: Iterator do czytania pliku JSON
+## Zadanie 3: Iterator liczb Fibonacciego
 
 **Wymagania:**
 - Napisz klasę `FibonacciIterator`, która zwraca kolejne liczby Fibonacciego.
@@ -53,7 +53,7 @@ while (it.hasNext()) {
 ```
 ---
 
-## Zadanie 4: Iterator liczb Fibonacciego
+## Zadanie 4: Iterator do czytania pliku JSON
 
 **Wymagania:**
 - Napisz klasę `JsonIterator`, która zwraca zawartosci kolejnych obiektów z pliku data_zad3.json.
