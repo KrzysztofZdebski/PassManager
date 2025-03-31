@@ -39,42 +39,7 @@ for (int i : new Range(5, 10)) {
 
 ---
 
-## Zadanie 3: Usuwanie elementów z listy za pomocą iteratora
-**Cel:** Nauczyć się korzystania z metody `remove()` w iteratorze.
-
-**Wymagania:**
-- Napisz metodę `removeOddNumbers(List<Integer> list)`, która usuwa wszystkie liczby nieparzyste z listy, używając `Iterator.remove()`.
-
-**Przykładowe użycie:**
-```java
-List<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6));
-removeOddNumbers(numbers);
-System.out.println(numbers);  // Powinno wypisać: [2, 4, 6]
-```
-
----
-
-## Zadanie 4: Iterator w `HashMap`
-**Cel:** Nauczyć się iteracji po `Map`.
-
-**Wymagania:**
-- Napisz metodę, która iteruje po `HashMap<String, Integer>` i wypisuje tylko te wpisy, w których wartość jest większa niż 50.
-
-**Przykładowe użycie:**
-```java
-Map<String, Integer> scores = new HashMap<>();
-scores.put("Alice", 70);
-scores.put("Bob", 40);
-scores.put("Charlie", 90);
-filterAndPrint(scores);
-// Powinno wypisać:
-// Alice - 70
-// Charlie - 90
-```
-
----
-
-## Zadanie 5: Iterator nieskończony
+## Zadanie 3: Iterator nieskończony
 **Cel:** Zrozumienie idei iteratorów generujących wartości dynamicznie.
 
 **Wymagania:**
