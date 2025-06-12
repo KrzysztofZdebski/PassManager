@@ -1,6 +1,6 @@
 # PassManager
 
-**PassManager** is a full-stack password manager web application that lets users securely store and manage their credentials. It provides a user-friendly interface (frontend) for logging in and handling password entries, and a Spring Boot backend that handles data storage and security. User credentials (site, username, password, etc.) are stored in a local database and encrypted before saving. For example, one similar project describes itself as “a fully-functional password manager written in Java Spring Boot and … React!”, highlighting this common technology stack. In this app, key features include user authentication, encrypted credential storage (e.g. using AES-256), and CRUD operations (adding, updating, deleting, copying passwords).  
+**PassManager** is a full-stack password manager browser extension that lets users securely store and manage their credentials. It provides a user-friendly interface (frontend) for logging in and handling password entries, and a Spring Boot backend that handles data storage and security. User credentials (site, username, password, etc.) are stored in a local database and encrypted before saving. For example, one similar project describes itself as “a fully-functional password manager written in Java Spring Boot and … React!”, highlighting this common technology stack. In this app, key features include user authentication, encrypted credential storage (e.g. using AES-256), and CRUD operations (adding, updating, deleting, copying passwords).  
 
 ## Key Features
 
